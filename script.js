@@ -1,10 +1,12 @@
 //Variable declaration and accessing html elements
 let favouriteList = [];
 let RecipeList = [];
-let favPage=false;
+let favPage = false;
 let URI = `https://www.themealdb.com/api/json/v1/1/search.php?s=`;
+let SingleURI=`https://www.themealdb.com/api/json/v1/1/lookup.php?i=`;
 let searchInput = document.getElementById('search-recipe');
-let displayRecipes = document.getElementById('main-content')
+let displayRecipes = document.getElementById('main-content');
+let singleRecipeData;
 
 //Fetch favourite Data from local Storage
 let data = localStorage.getItem('meal-app');
@@ -35,14 +37,28 @@ async function fetchData(search) {
 
 }
 
+//Getting single data
+async function fetchSingleData(id){
+    let response=await fetch(SingleURI+id);
+    let data=await response.json();
+    if(data.meals){
+        singleRecipeData=data.meals[0];
+        displaySingleData(singleRecipeData);
+    }
+    else{
+        showNotification("No Data found");
+        return;
+    }
+}
+
 //Display Data on Screen
 function displayList(dataList) {
-    let list = 
-    `<h2>${favPage?"List of Favourites":"List of Recipes"}</h2><div id="recipe-list">`;
+    let list =
+        `<h2>${favPage ? "List of Favourites" : "List of Recipes"}</h2><div id="recipe-list">`;
     if (dataList.length > 0) {
         dataList.map((element) => {
-            let isFavourite=favouriteList.filter((elem)=>{
-                return elem.idMeal===element.idMeal;
+            let isFavourite = favouriteList.filter((elem) => {
+                return elem.idMeal === element.idMeal;
             })
             list += `
             <div class="recipe-items"> 
@@ -54,12 +70,12 @@ function displayList(dataList) {
                     <h4>Name - ${element.strMeal}</h4>
                     <p>Category - ${element.strCategory}</p>
                     <p>Origin - ${element.strArea}</p>
-                    <button id=${element.idMeal} class="fav-btn">Add to Favourite<span><i class='${isFavourite.length>0 ? `fa-solid fa-heart fav-empty` : `fa-regular fa-heart fav-filled`}'></i></span></button>
+                    <button id=${element.idMeal} class="fav-btn">${isFavourite.length>0?'Remove from ':'Add to'} Favourite<span><i class='${isFavourite.length > 0 ? `fa-solid fa-heart fav-empty` : `fa-regular fa-heart fav-filled`}'></i></span></button>
                 </div>
             </div>
             `
         })
-        list+=`
+        list += `
         </div>`;
     }
     else {
@@ -70,25 +86,25 @@ function displayList(dataList) {
 
 //Toggle Favourite List
 function addToFavourite(id) {
-    let favList=favouriteList.filter((elem)=>{
-        return elem.idMeal===id;
+    let favList = favouriteList.filter((elem) => {
+        return elem.idMeal === id;
     })
-    if(favList.length>0){
-        favList=favouriteList.filter((elem)=>{
-            return elem.idMeal!==id;
+    if (favList.length > 0) {
+        favList = favouriteList.filter((elem) => {
+            return elem.idMeal !== id;
         })
-        favouriteList=favList;
+        favouriteList = favList;
         showNotification("Recipe deleted from Favourites");
     }
-    else{
-        let list=RecipeList.filter((elem)=>{
-            return elem.idMeal===id;
+    else {
+        let list = RecipeList.filter((elem) => {
+            return elem.idMeal === id;
         })
         favouriteList.push(list[0]);
         showNotification("Recipe added to Favourites");
     }
-    localStorage.setItem('meal-app',JSON.stringify(favouriteList));
-    favPage=true;
+    localStorage.setItem('meal-app', JSON.stringify(favouriteList));
+    favPage = true;
     displayList(favouriteList);
 }
 
@@ -100,39 +116,39 @@ function showNotification(text) {
 
 //Even Listeners
 searchInput.addEventListener('input', (e) => {
-    if(e.target.value !== ''){
+    if (e.target.value !== '') {
         fetchData(e.target.value);
     }
-    else{
-        favPage=false;
+    else {
+        favPage = false;
         displayList(RecipeList);
     }
 });
 
 document.addEventListener('click', (element) => {
-    element.preventDefault();
-    if (element.target.className === 'fav-btn') {
+    if (element.target.className === 'fav-btn' || element.target.className==='fav-btn-single') {
         addToFavourite(element.target.id);
     }
     if (element.target.id === 'Favourites-btn') {
-        favPage=true;
+        favPage = true;
         displayList(favouriteList);
-        console.log("Clicked on favourites");
     }
-    if(element.target.className==='recipe-view-more'){
-        console.log("View More")
-        displaySingleData(element.target.id);
+    if (element.target.className === 'recipe-view-more') {
+        fetchSingleData(element.target.id);
+    }
+    if (element.target.className === 'go-back') {
+        favPage = false;
+        displayList(RecipeList);
     }
 })
 
 
 //Get the single Recipe Data
-function displaySingleData(id){
-    let singleRecipe=RecipeList.filter((elem)=>{
-        return elem.idMeal===id;
-    })
-    singleData=singleRecipe[0];
-    let htmlData=`
+function displaySingleData(singleData) {
+        let isFavourite = favouriteList.filter((elem) => {
+        return elem.idMeal === singleData.idMeal;
+         })
+        let htmlData = `
     <div class="single-page-div">
     <div class="left-side">
         <img class="single-page-img" src="${singleData.strMealThumb}" >
@@ -256,9 +272,12 @@ function displaySingleData(id){
                 <td>${singleData.strMeasure20}</td>
             </tr>
         </table>
-        <a href="index.html"><button class="go-back">Go Back</button></a>
+        <div>
+        <button id=${singleData.idMeal} class="fav-btn-single">${isFavourite>0?'Remove from ':'Add to'} Favourite<span><i class='${isFavourite.length > 0 ? `fa-solid fa-heart fav-empty` : `fa-regular fa-heart fav-filled`}'></i></span></button>
+        <button class="go-back">Go Back</button>
+        </div>
     </div>
 </div>
     `;
-    displayRecipes.innerHTML=htmlData;
+        displayRecipes.innerHTML = htmlData;
 }
