@@ -18,7 +18,7 @@ else {
 }
 displayList(RecipeList);
 
-//Getting all Search Data from API
+//Getting all input Searched Data from API
 async function fetchData(search) {
     let response = await fetch(URI + search);
     let data = await response.json();
@@ -33,7 +33,7 @@ async function fetchData(search) {
 
 }
 
-//Getting single data
+//Getting single recipe data
 async function fetchSingleData(id){
     let response=await fetch(SingleURI+id);
     let data=await response.json();
@@ -47,7 +47,7 @@ async function fetchSingleData(id){
     }
 }
 
-//Display Data on Screen
+//Display Data of recipes and favourites list on Screen
 function displayList(dataList) {
     let list =
         `<h2>${favPage ? "List of Favourites" : "List of Recipes"}</h2><div id="recipe-list">`;
@@ -110,8 +110,9 @@ function showNotification(text) {
     alert(text)
 }
 
-//Even Listeners
+//Event Listeners
 searchInput.addEventListener('input', (e) => {
+    //Event for Input Search
     if (e.target.value !== '') {
         favPage=false;
         displayRecipes.innerHTML = `<h1 style="display:flex; align-items:center; gap: 1rem;">LOADING <img style="width: 3rem; height: 3rem;" src="https://i2.wp.com/raw.githubusercontent.com/Codelessly/FlutterLoadingGIFs/master/packages/cupertino_activity_indicator.gif?w=770&is-pending-load=1#038;ssl=1" /></h1>`;
@@ -126,20 +127,25 @@ searchInput.addEventListener('input', (e) => {
 });
 
 document.addEventListener('click', (element) => {
+    //Event for Favourite Toggling
     if (element.target.className === 'fav-btn' || element.target.className==='fav-btn-single') {
         toggleFavourite(element.target.id);
     }
+    //Event for Displaying Favourites
     if (element.target.id === 'Favourites-btn') {
         favPage = true;
         displayList(favouriteList);
     }
+    //Event for Displaying Single Recipe Data
     if (element.target.className === 'recipe-view-more') {
         fetchSingleData(element.target.id);
     }
+    //Event to go back from Single Recipe Page
     if (element.target.className === 'go-back') {
         favPage = false;
         displayList(RecipeList);
     }
+    //Event to go to home page by clicking Logo
     if(element.target.tagName==='H1'){
         RecipeList=[];
         searchInput.value='';
