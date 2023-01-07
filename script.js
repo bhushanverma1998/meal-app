@@ -20,19 +20,15 @@ displayList(RecipeList);
 
 //Getting all Search Data from API
 async function fetchData(search) {
-    displayRecipes.innerHTML = `<h1>LOADING</h1>`
     let response = await fetch(URI + search);
     let data = await response.json();
     if (data.meals) {
         RecipeList = data.meals;
-        setTimeout(() => {
-            displayList(RecipeList);
-        }, 2000)
+        displayList(RecipeList);
     }
     else {
         RecipeList = [];
-        showNotification("No Data Found!");
-        displayList(RecipeList);
+        displayRecipes.innerHTML=`<h1>No Meal Found with the searched result</h1>`;
     }
 
 }
@@ -117,7 +113,11 @@ function showNotification(text) {
 //Even Listeners
 searchInput.addEventListener('input', (e) => {
     if (e.target.value !== '') {
-        fetchData(e.target.value);
+        favPage=false;
+        displayRecipes.innerHTML = `<h1 style="display:flex; align-items:center; gap: 1rem;">LOADING <img style="width: 3rem; height: 3rem;" src="https://i2.wp.com/raw.githubusercontent.com/Codelessly/FlutterLoadingGIFs/master/packages/cupertino_activity_indicator.gif?w=770&is-pending-load=1#038;ssl=1" /></h1>`;
+        setTimeout(()=>{
+            fetchData(e.target.value);
+        },1000)
     }
     else {
         favPage = false;
@@ -138,6 +138,11 @@ document.addEventListener('click', (element) => {
     }
     if (element.target.className === 'go-back') {
         favPage = false;
+        displayList(RecipeList);
+    }
+    if(element.target.tagName==='H1'){
+        RecipeList=[];
+        searchInput.value='';
         displayList(RecipeList);
     }
 })
@@ -273,7 +278,7 @@ function displaySingleData(singleData) {
             </tr>
         </table>
         <div>
-        <button id=${singleData.idMeal} class="fav-btn-single">${isFavourite>0?'Remove from ':'Add to'} Favourite<span><i class='${isFavourite.length > 0 ? `fa-solid fa-heart fav-empty` : `fa-regular fa-heart fav-filled`}'></i></span></button>
+        <button id=${singleData.idMeal} class="fav-btn-single">${isFavourite.length>0?'Remove from ':'Add to'} Favourite<span><i class='${isFavourite.length > 0 ? `fa-solid fa-heart fav-empty` : `fa-regular fa-heart fav-filled`}'></i></span></button>
         <button class="go-back">Go Back</button>
         </div>
     </div>

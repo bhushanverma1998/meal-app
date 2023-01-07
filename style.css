@@ -28,6 +28,7 @@ header{
 header>h1{
     color: white;
     text-shadow: 1px 2px 3px red, 2px 1px 4px blue, 4px 3px 1px brown, 1px 0px 0.2em gray;
+    cursor: pointer;
 }
 
 #search-form{
@@ -128,10 +129,12 @@ h2{
     display: none;
     cursor: pointer;
     transition: all .3s ease-in-out;
+    font-weight: bolder;
+    text-transform: uppercase;
 }
 
 .recipe-img:hover .recipe-view-more{
-    backdrop-filter: blur(2px);
+    backdrop-filter: blur(8px);
     display: block;
 }
 
@@ -154,7 +157,7 @@ h2{
     position: relative;
     display: flex;
     gap: 1rem;
-    font-size: 1.2rem;
+    font-size: 1rem;
     cursor: pointer;
     padding: 1rem;
     border-radius: 1rem;
@@ -197,6 +200,7 @@ h2{
     gap: .5rem;
     padding: 1rem;
     border-right: 1px solid black;
+    justify-content: space-around;
 }
 
 .single-page-img{
@@ -222,8 +226,17 @@ h2{
     gap: 1rem;
 }
 
-.recipe-single-btns button , .go-back ,.fav-btn-single{
+.recipe-single-btns button , .go-back{
     width: 8rem;
+    height: 3rem;
+    background-color: rgb(255, 59, 92);
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: all .3s ease-in-out;
+}
+.fav-btn-single{
+    padding: 0 2rem;
     height: 3rem;
     background-color: rgb(255, 59, 92);
     color: white;
