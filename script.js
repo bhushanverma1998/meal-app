@@ -81,7 +81,7 @@ function displayList(dataList) {
 }
 
 //Toggle Favourite List
-function addToFavourite(id) {
+function toggleFavourite(id) {
     let favList = favouriteList.filter((elem) => {
         return elem.idMeal === id;
     })
@@ -127,7 +127,7 @@ searchInput.addEventListener('input', (e) => {
 
 document.addEventListener('click', (element) => {
     if (element.target.className === 'fav-btn' || element.target.className==='fav-btn-single') {
-        addToFavourite(element.target.id);
+        toggleFavourite(element.target.id);
     }
     if (element.target.id === 'Favourites-btn') {
         favPage = true;
