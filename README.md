@@ -31,6 +31,6 @@ The link to the final hosted webpage is : https://bhushanverma1998.github.io/mea
     
     ![image (assets/readme_content/view-img.png=400*250)](/assets/readme_content/view-img.png)
 
-    <p> On this page below Recipe Image user have to buttons. By clicking on 'view full blog' will be redirected to Recipe Official Page and on clicking 'view on Youtube' can get video of recipe</p>
+    <p> On this page, below the Recipe Image user have two buttons. By clicking on 'view full blog' will be redirected to Recipe Official Page and on clicking 'view on Youtube' can get video of recipe</p>
 
     ![image (assets/readme_content/view-details.png=400*250)](/assets/readme_content/view-details.png)
